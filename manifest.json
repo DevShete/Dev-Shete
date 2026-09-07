@@ -1,0 +1,9 @@
+{
+  "name": "The T Booster",
+  "short_name": "T Booster",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#14171c",
+  "theme_color": "#14171c",
+  "orientation": "portrait"
+}

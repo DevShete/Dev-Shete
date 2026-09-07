@@ -1,0 +1,1180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>The T Booster</title>
+<meta name="theme-color" content="#14171c">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="T Booster">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%2314171c'/%3E%3Ccircle cx='32' cy='32' r='18' fill='none' stroke='%234f8fd6' stroke-width='4'/%3E%3Cpath d='M32 20v12l8 8' stroke='%234f8fd6' stroke-width='4' stroke-linecap='round' fill='none'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@500;600;700;800;900&family=Roboto+Mono:wght@400;500;600&display=swap">
+<style>
+  :root{
+    --bg:#14171c;
+    --surface:#1b1f26;
+    --surface-2:#232833;
+    --border:#333a46;
+    --border-soft:#262b34;
+    --text:#eef1f5;
+    --text-dim:#8b93a3;
+    --accent:#4f8fd6;
+    --accent-strong:#72a8e3;
+    --accent-text:#08131f;
+    --accent-dim:rgba(79,143,214,0.14);
+    --danger:#d1554a;
+    --danger-dim:rgba(209,85,74,0.14);
+    --tag-blue:#4f8fd6;
+    --tag-green:#3fae74;
+    --tag-red:#d1554a;
+  }
+  @media (prefers-color-scheme: light){
+    :root:not([data-theme="dark"]){
+      --bg:#f7f8fa;
+      --surface:#ffffff;
+      --surface-2:#eef1f5;
+      --border:#dde1e8;
+      --border-soft:#e8ebf0;
+      --text:#1f2430;
+      --text-dim:#6b7280;
+      --accent:#2540a0;
+      --accent-strong:#3a5bc7;
+      --accent-text:#ffffff;
+      --accent-dim:rgba(37,64,160,0.10);
+      --danger:#c0392b;
+      --danger-dim:rgba(192,57,43,0.10);
+      --tag-blue:#2540a0;
+      --tag-green:#2f8f5b;
+      --tag-red:#c0392b;
+    }
+  }
+  :root[data-theme="light"]{
+    --bg:#f7f8fa;
+    --surface:#ffffff;
+    --surface-2:#eef1f5;
+    --border:#dde1e8;
+    --border-soft:#e8ebf0;
+    --text:#1f2430;
+    --text-dim:#6b7280;
+    --accent:#2540a0;
+    --accent-strong:#3a5bc7;
+    --accent-text:#ffffff;
+    --accent-dim:rgba(37,64,160,0.10);
+    --danger:#c0392b;
+    --danger-dim:rgba(192,57,43,0.10);
+    --tag-blue:#2540a0;
+    --tag-green:#2f8f5b;
+    --tag-red:#c0392b;
+  }
+
+  *{ box-sizing:border-box; }
+  html,body{ margin:0; padding:0; }
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:'Hanken Grotesk', ui-sans-serif, system-ui, sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  @media (prefers-reduced-motion: reduce){
+    *{ transition-duration:0.001ms !important; animation-duration:0.001ms !important; }
+  }
+
+  .page{
+    max-width:640px;
+    margin:0 auto;
+    padding:clamp(24px,6vw,48px) clamp(18px,5vw,28px) 80px;
+    display:flex;
+    flex-direction:column;
+    gap:26px;
+  }
+
+  /* ---------- header ---------- */
+  .head{
+    display:flex;
+    align-items:baseline;
+    justify-content:space-between;
+    gap:12px;
+    padding-bottom:18px;
+    border-bottom:1px solid var(--border-soft);
+  }
+  .brand h1{
+    margin:0;
+    font-family:'Hanken Grotesk', ui-sans-serif, sans-serif;
+    font-weight:900;
+    font-size:clamp(30px,7vw,40px);
+    letter-spacing:0.01em;
+    text-transform:uppercase;
+    line-height:0.95;
+  }
+  .brand h1 .accent-t{ color:var(--accent); }
+  .tagline{
+    margin:6px 0 0;
+    font-family:'Roboto Mono', ui-monospace, monospace;
+    font-size:12px;
+    letter-spacing:0.09em;
+    text-transform:uppercase;
+    color:var(--text-dim);
+  }
+  .account{
+    display:flex;
+    align-items:center;
+    gap:10px;
+  }
+  .account-email{
+    font-family:'Roboto Mono', monospace;
+    font-size:11px;
+    color:var(--text-dim);
+    max-width:140px;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+  }
+  .signout-btn{
+    flex-shrink:0;
+    background:transparent;
+    border:1px solid var(--border);
+    color:var(--text-dim);
+    border-radius:7px;
+    padding:6px 12px;
+    font-family:'Hanken Grotesk', sans-serif;
+    font-weight:600;
+    font-size:12.5px;
+    cursor:pointer;
+    transition:border-color .15s ease, color .15s ease;
+  }
+  .signout-btn:hover{ border-color:var(--danger); color:var(--danger); }
+  .signout-btn:focus-visible{ outline:2px solid var(--accent); outline-offset:2px; }
+
+  /* ---------- auth gate ---------- */
+  .auth-gate{
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:10px;
+    padding:32px 24px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:14px;
+    text-align:center;
+  }
+  .auth-gate p{
+    margin:0;
+    max-width:34ch;
+    color:var(--text-dim);
+    font-size:14px;
+    line-height:1.55;
+  }
+  .signin-btn{
+    display:inline-flex;
+    align-items:center;
+    gap:10px;
+    background:var(--accent);
+    color:var(--accent-text);
+    border:none;
+    border-radius:8px;
+    padding:12px 22px;
+    font-family:'Hanken Grotesk', sans-serif;
+    font-weight:700;
+    font-size:15px;
+    cursor:pointer;
+    transition:filter .15s ease, transform .1s ease;
+  }
+  .signin-btn:hover{ filter:brightness(1.06); }
+  .signin-btn:active{ transform:scale(0.97); }
+  .signin-btn:focus-visible{ outline:2px solid var(--accent); outline-offset:2px; }
+  .signin-btn svg{ flex-shrink:0; }
+  .auth-error{
+    margin:0;
+    color:var(--danger);
+    font-size:13px;
+  }
+
+  /* ---------- calendar ---------- */
+  .calendar{
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:10px;
+    padding:16px 16px 14px;
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+  }
+  .cal-head{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+  }
+  .cal-title{
+    font-family:'Hanken Grotesk', sans-serif;
+    font-weight:800;
+    font-size:19px;
+    letter-spacing:0.03em;
+    text-transform:uppercase;
+  }
+  .cal-nav{
+    width:28px;
+    height:28px;
+    flex-shrink:0;
+    border-radius:50%;
+    border:1px solid var(--border);
+    background:transparent;
+    color:var(--text-dim);
+    font-size:16px;
+    line-height:1;
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    transition:border-color .15s ease, color .15s ease;
+  }
+  .cal-nav:hover{ border-color:var(--accent); color:var(--accent); }
+  .cal-nav:focus-visible{ outline:2px solid var(--accent); outline-offset:2px; }
+
+  .cal-weekdays,
+  .cal-grid{
+    display:grid;
+    grid-template-columns:repeat(7,1fr);
+    gap:4px;
+  }
+  .cal-weekdays span{
+    text-align:center;
+    font-family:'Roboto Mono', monospace;
+    font-size:10px;
+    letter-spacing:0.05em;
+    color:var(--text-dim);
+    padding-bottom:2px;
+  }
+  .cal-day{
+    aspect-ratio:1;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border-radius:6px;
+    background:var(--surface-2);
+    border:1px solid var(--border-soft);
+    font-family:'Roboto Mono', monospace;
+    font-size:clamp(10.5px,3vw,12.5px);
+    font-variant-numeric:tabular-nums;
+    color:var(--text);
+    cursor:pointer;
+    padding:0;
+    transition:background .15s ease, border-color .15s ease, transform .1s ease;
+  }
+  .cal-day:hover{ border-color:var(--accent); }
+  .cal-day:active{ transform:scale(0.93); }
+  .cal-day:focus-visible{ outline:2px solid var(--accent); outline-offset:2px; }
+  .cal-day.blank{ background:transparent; border-color:transparent; cursor:default; pointer-events:none; }
+  .cal-day.tag-blue{ background:var(--tag-blue); border-color:var(--tag-blue); color:#fff; }
+  .cal-day.tag-green{ background:var(--tag-green); border-color:var(--tag-green); color:#fff; }
+  .cal-day.tag-red{ background:var(--tag-red); border-color:var(--tag-red); color:#fff; }
+  .cal-day.today{ border:2px solid var(--accent); font-weight:700; }
+  .cal-day.selected{ box-shadow:0 0 0 2px var(--surface), 0 0 0 4px var(--text-dim); }
+
+  .cal-pens{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    padding-top:8px;
+    border-top:1px solid var(--border-soft);
+  }
+  .cal-pens-label{
+    font-family:'Roboto Mono', monospace;
+    font-size:10.5px;
+    letter-spacing:0.06em;
+    text-transform:uppercase;
+    color:var(--text-dim);
+    margin-right:2px;
+  }
+  .pen{
+    width:22px;
+    height:22px;
+    border-radius:50%;
+    background:var(--pen-color);
+    border:none;
+    padding:0;
+    cursor:pointer;
+    transition:transform .12s ease, box-shadow .15s ease;
+  }
+  .pen.active{
+    box-shadow:0 0 0 2px var(--surface), 0 0 0 4px var(--pen-color);
+    transform:scale(1.06);
+  }
+  .pen:focus-visible{ outline:2px solid var(--accent); outline-offset:3px; }
+  .cal-hint{
+    margin:0;
+    font-family:'Roboto Mono', monospace;
+    font-size:11px;
+    color:var(--text-dim);
+    line-height:1.5;
+  }
+
+  .quick-add{
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+    padding-top:12px;
+    border-top:1px solid var(--border-soft);
+  }
+  .qa-row{
+    display:flex;
+    align-items:center;
+    flex-wrap:wrap;
+    gap:10px;
+  }
+  .qa-row .win-form{ flex:1 1 220px; }
+  .qa-trigger{
+    display:inline-flex;
+    align-items:center;
+    gap:7px;
+    background:var(--accent-dim);
+    color:var(--accent);
+    border:none;
+    border-radius:20px;
+    padding:8px 14px 8px 8px;
+    font-family:'Hanken Grotesk', sans-serif;
+    font-weight:700;
+    font-size:13.5px;
+    cursor:pointer;
+    transition:filter .15s ease, transform .1s ease;
+  }
+  .qa-trigger:hover{ filter:brightness(1.08); }
+  .qa-trigger:active{ transform:scale(0.97); }
+  .qa-trigger:focus-visible{ outline:2px solid var(--accent); outline-offset:2px; }
+  .qa-trigger.qa-loss{ background:var(--danger-dim); color:var(--danger); }
+  .qa-plus{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    width:18px;
+    height:18px;
+    flex-shrink:0;
+    border-radius:50%;
+    background:var(--accent);
+    color:var(--accent-text);
+    font-size:13px;
+    line-height:1;
+  }
+  .qa-loss .qa-plus{ background:var(--danger); color:#fff; }
+  .qa-cancel{
+    flex-shrink:0;
+    background:transparent;
+    border:1px solid var(--border);
+    color:var(--text-dim);
+    border-radius:7px;
+    padding:0 14px;
+    font-family:'Hanken Grotesk', sans-serif;
+    font-size:14px;
+    cursor:pointer;
+  }
+  .qa-cancel:hover{ border-color:var(--text-dim); color:var(--text); }
+  .qa-cancel:focus-visible{ outline:2px solid var(--accent); outline-offset:2px; }
+
+  .cal-detail{
+    padding-top:14px;
+    border-top:1px solid var(--border-soft);
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+  }
+  .cal-detail-head{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+  }
+  .cal-detail-date{
+    font-family:'Hanken Grotesk', sans-serif;
+    font-weight:700;
+    font-size:15px;
+  }
+  .cal-detail-close{
+    width:22px;
+    height:22px;
+    flex-shrink:0;
+    border-radius:50%;
+    border:1px solid var(--border);
+    background:transparent;
+    color:var(--text-dim);
+    font-size:14px;
+    line-height:1;
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    transition:border-color .15s ease, color .15s ease;
+  }
+  .cal-detail-close:hover{ border-color:var(--danger); color:var(--danger); }
+  .cal-detail-close:focus-visible{ outline:2px solid var(--accent); outline-offset:1px; }
+  .cal-detail-body{
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+  }
+
+  /* ---------- stats strip ---------- */
+  .stats{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    border:1px solid var(--border);
+    border-radius:10px;
+    overflow:hidden;
+    background:var(--surface);
+  }
+  .stat{
+    padding:14px 6px;
+    text-align:center;
+    border-left:1px solid var(--border);
+  }
+  .stat:first-child{ border-left:none; }
+  .stat-value{
+    display:block;
+    font-family:'Hanken Grotesk', sans-serif;
+    font-weight:800;
+    font-size:clamp(20px,6vw,32px);
+    line-height:1;
+    font-variant-numeric:tabular-nums;
+    color:var(--accent);
+  }
+  .stat.is-loss .stat-value{ color:var(--danger); }
+  .stat-label{
+    display:block;
+    margin-top:6px;
+    font-family:'Roboto Mono', monospace;
+    font-size:clamp(8.5px,2vw,10.5px);
+    letter-spacing:0.06em;
+    text-transform:uppercase;
+    color:var(--text-dim);
+  }
+
+  .charge-wrap{
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+  .charge{
+    display:flex;
+    align-items:flex-end;
+    gap:4px;
+  }
+  .charge-seg{
+    width:9px;
+    background:var(--surface-2);
+    border:1px solid var(--border);
+    border-radius:2px;
+    transition:background .2s ease, border-color .2s ease;
+  }
+  .charge-seg[data-i="0"]{ height:14px; }
+  .charge-seg[data-i="1"]{ height:20px; }
+  .charge-seg[data-i="2"]{ height:26px; }
+  .charge-seg.lit{
+    background:var(--accent);
+    border-color:var(--accent);
+  }
+  .charge.full .charge-seg.lit{
+    background:var(--accent-strong);
+    border-color:var(--accent-strong);
+  }
+  .charge-count{
+    font-family:'Roboto Mono', monospace;
+    font-size:11px;
+    color:var(--text-dim);
+    font-variant-numeric:tabular-nums;
+  }
+
+  .notice{
+    margin:0;
+    padding:10px 12px;
+    border:1px solid var(--border);
+    border-radius:7px;
+    background:var(--accent-dim);
+    color:var(--text-dim);
+    font-size:13px;
+  }
+
+  .win-form{
+    display:flex;
+    gap:8px;
+  }
+  .win-form input{
+    flex:1;
+    min-width:0;
+    background:var(--surface-2);
+    border:1px solid var(--border);
+    border-radius:7px;
+    padding:11px 12px;
+    font-family:'Hanken Grotesk', sans-serif;
+    font-size:15px;
+    color:var(--text);
+  }
+  .win-form input::placeholder{ color:var(--text-dim); }
+  .win-form input:focus-visible{
+    outline:2px solid var(--accent);
+    outline-offset:1px;
+  }
+  .win-form button{
+    flex-shrink:0;
+    background:var(--accent);
+    color:var(--accent-text);
+    border:none;
+    border-radius:7px;
+    padding:0 18px;
+    font-family:'Hanken Grotesk', sans-serif;
+    font-weight:700;
+    font-size:14px;
+    cursor:pointer;
+    transition:filter .15s ease, transform .1s ease;
+  }
+  .win-form button:hover{ filter:brightness(1.06); }
+  .win-form button:active{ transform:scale(0.97); }
+  .win-form button:focus-visible{
+    outline:2px solid var(--accent);
+    outline-offset:2px;
+  }
+  .win-form.loss-form button{
+    background:var(--danger);
+    color:#fff;
+  }
+
+  .win-remove{
+    flex-shrink:0;
+    width:22px;
+    height:22px;
+    border-radius:50%;
+    border:1px solid var(--border);
+    background:transparent;
+    color:var(--text-dim);
+    font-size:14px;
+    line-height:1;
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    transition:border-color .15s ease, color .15s ease;
+  }
+  .win-remove:hover{ border-color:var(--danger); color:var(--danger); }
+  .win-remove:focus-visible{ outline:2px solid var(--accent); outline-offset:1px; }
+
+  .empty-note{
+    margin:0;
+    font-size:13.5px;
+    color:var(--text-dim);
+    font-style:italic;
+  }
+
+  .history-count{
+    font-family:'Roboto Mono', monospace;
+    font-size:10.5px;
+    letter-spacing:0.04em;
+    color:var(--accent);
+    background:var(--accent-dim);
+    padding:3px 8px;
+    border-radius:20px;
+    white-space:nowrap;
+  }
+  .history-count.loss{
+    color:var(--danger);
+    background:var(--danger-dim);
+  }
+  .history-wins{
+    list-style:none;
+    margin:0;
+    padding:0;
+    display:flex;
+    flex-direction:column;
+    gap:5px;
+  }
+  .history-wins li{
+    font-size:14px;
+    line-height:1.45;
+    color:var(--text);
+    padding-left:14px;
+    position:relative;
+  }
+  .history-wins li::before{
+    content:"";
+    position:absolute;
+    left:0;
+    top:8px;
+    width:5px;
+    height:5px;
+    border-radius:50%;
+    background:var(--accent);
+  }
+  .history-wins.losses li::before{ background:var(--danger); }
+  .history-wins.editable li{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:8px;
+  }
+
+  footer.foot{
+    text-align:center;
+    font-family:'Roboto Mono', monospace;
+    font-size:10.5px;
+    color:var(--text-dim);
+    letter-spacing:0.04em;
+  }
+</style>
+</head>
+<body>
+
+<div class="page">
+  <header class="head">
+    <div class="brand">
+      <h1>The <span class="accent-t">T</span> Booster</h1>
+      <p class="tagline">Daily win log</p>
+    </div>
+    <div class="account">
+      <span class="account-email" id="accountEmail" hidden></span>
+      <button type="button" class="signout-btn" id="signOutBtn" hidden>Sign out</button>
+    </div>
+  </header>
+
+  <section class="auth-gate" id="authGate">
+    <p>Sign in with your Google account to keep a private, synced log &mdash; only you can see or edit it.</p>
+    <button type="button" class="signin-btn" id="signInBtn">
+      <svg width="18" height="18" viewBox="0 0 18 18"><path fill="#fff" d="M17.64 9.2c0-.64-.06-1.25-.16-1.84H9v3.48h4.84a4.14 4.14 0 01-1.8 2.72v2.26h2.92c1.7-1.57 2.68-3.88 2.68-6.62z"/><path fill="#fff" d="M9 18c2.43 0 4.47-.8 5.96-2.18l-2.92-2.26c-.8.54-1.84.86-3.04.86-2.34 0-4.32-1.58-5.03-3.7H.96v2.33A9 9 0 009 18z"/><path fill="#fff" d="M3.97 10.72A5.4 5.4 0 013.68 9c0-.6.1-1.18.29-1.72V4.95H.96A9 9 0 000 9c0 1.45.35 2.83.96 4.05l3.01-2.33z"/><path fill="#fff" d="M9 3.58c1.32 0 2.5.45 3.44 1.35l2.58-2.58C13.46.89 11.43 0 9 0A9 9 0 00.96 4.95l3.01 2.33C4.68 5.16 6.66 3.58 9 3.58z"/></svg>
+      Sign in with Google
+    </button>
+    <p class="auth-error" id="authError" hidden></p>
+  </section>
+
+  <div id="appBody" hidden>
+    <section class="calendar" aria-label="Calendar">
+      <div class="cal-head">
+        <button type="button" class="cal-nav" id="calPrev" aria-label="Previous month">‹</button>
+        <span class="cal-title" id="calTitle">&nbsp;</span>
+        <button type="button" class="cal-nav" id="calNext" aria-label="Next month">›</button>
+      </div>
+      <div class="cal-weekdays" id="calWeekdays"></div>
+      <div class="cal-grid" id="calGrid"></div>
+      <div class="cal-pens">
+        <span class="cal-pens-label">Mark a day</span>
+        <button type="button" class="pen" data-color="blue" style="--pen-color:var(--tag-blue)" aria-label="Blue"></button>
+        <button type="button" class="pen" data-color="green" style="--pen-color:var(--tag-green)" aria-label="Green"></button>
+        <button type="button" class="pen" data-color="red" style="--pen-color:var(--tag-red)" aria-label="Red"></button>
+      </div>
+      <p class="cal-hint">Pick a color, then tap a day to mark it — tap the same color again to clear it.</p>
+
+      <div class="quick-add" id="quickAdd">
+        <div class="qa-row">
+          <button type="button" class="qa-trigger" id="qaWinTrigger"><span class="qa-plus">+</span>Add win</button>
+          <form class="win-form" id="winForm" hidden>
+            <input type="text" id="winInput" placeholder="What's a win from today?" autocomplete="off" maxlength="200" />
+            <button type="submit">Add</button>
+            <button type="button" class="qa-cancel" id="winCancel">Cancel</button>
+          </form>
+          <div class="charge-wrap" aria-hidden="true">
+            <div class="charge" id="charge">
+              <span class="charge-seg" data-i="0"></span>
+              <span class="charge-seg" data-i="1"></span>
+              <span class="charge-seg" data-i="2"></span>
+            </div>
+            <span class="charge-count" id="chargeCount">0/3</span>
+          </div>
+        </div>
+        <div class="qa-row">
+          <button type="button" class="qa-trigger qa-loss" id="qaLossTrigger"><span class="qa-plus">+</span>Add loss</button>
+          <form class="win-form loss-form" id="lossForm" hidden>
+            <input type="text" id="lossInput" placeholder="What's a loss from today?" autocomplete="off" maxlength="200" />
+            <button type="submit">Add</button>
+            <button type="button" class="qa-cancel" id="lossCancel">Cancel</button>
+          </form>
+        </div>
+      </div>
+
+      <div class="cal-detail" id="calDetail" hidden>
+        <div class="cal-detail-head">
+          <span class="cal-detail-date" id="calDetailDate"></span>
+          <button type="button" class="cal-detail-close" id="calDetailClose" aria-label="Close day details">×</button>
+        </div>
+        <div class="cal-detail-body" id="calDetailBody"></div>
+      </div>
+    </section>
+
+    <section class="stats" aria-label="Progress">
+      <div class="stat">
+        <span class="stat-value" id="streakValue">&ndash;</span>
+        <span class="stat-label">current streak</span>
+      </div>
+      <div class="stat">
+        <span class="stat-value" id="bestValue">&ndash;</span>
+        <span class="stat-label">best streak</span>
+      </div>
+      <div class="stat">
+        <span class="stat-value" id="winsValue">&ndash;</span>
+        <span class="stat-label">wins logged</span>
+      </div>
+      <div class="stat is-loss">
+        <span class="stat-value" id="lossesValue">&ndash;</span>
+        <span class="stat-label">losses logged</span>
+      </div>
+    </section>
+
+    <footer class="foot">keep stacking wins</footer>
+  </div>
+</div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js";
+  import {
+    getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged
+  } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-auth.js";
+  import {
+    getFirestore, collection, doc, setDoc, deleteDoc, onSnapshot
+  } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js";
+
+  // ---- PASTE YOUR FIREBASE CONFIG HERE ----
+  // Firebase console > Project settings > General > Your apps > Web app > SDK setup and configuration
+  const firebaseConfig = {
+    apiKey: "AIzaSyB1a62YY8zTNAFTWfAgu7-D48ccNwPjAOU",
+    authDomain: "t-booster-f4f21.firebaseapp.com",
+    projectId: "t-booster-f4f21",
+    storageBucket: "t-booster-f4f21.firebasestorage.app",
+    messagingSenderId: "669049955387",
+    appId: "1:669049955387:web:bffd9cb37bdd3a3d91a81e"
+  };
+  // ------------------------------------------
+
+  const firebaseApp = initializeApp(firebaseConfig);
+  const auth = getAuth(firebaseApp);
+  const fsDb = getFirestore(firebaseApp);
+  const provider = new GoogleAuthProvider();
+
+  (function(){
+    "use strict";
+
+    var accountEmailEl = document.getElementById('accountEmail');
+    var signOutBtn = document.getElementById('signOutBtn');
+    var authGateEl = document.getElementById('authGate');
+    var signInBtn = document.getElementById('signInBtn');
+    var authErrorEl = document.getElementById('authError');
+    var appBodyEl = document.getElementById('appBody');
+
+    var chargeEl = document.getElementById('charge');
+    var chargeSegs = Array.prototype.slice.call(document.querySelectorAll('.charge-seg'));
+    var chargeCountEl = document.getElementById('chargeCount');
+
+    var qaWinTrigger = document.getElementById('qaWinTrigger');
+    var winForm = document.getElementById('winForm');
+    var winInput = document.getElementById('winInput');
+    var winCancel = document.getElementById('winCancel');
+
+    var qaLossTrigger = document.getElementById('qaLossTrigger');
+    var lossForm = document.getElementById('lossForm');
+    var lossInput = document.getElementById('lossInput');
+    var lossCancel = document.getElementById('lossCancel');
+
+    var streakValueEl = document.getElementById('streakValue');
+    var bestValueEl = document.getElementById('bestValue');
+    var winsValueEl = document.getElementById('winsValue');
+    var lossesValueEl = document.getElementById('lossesValue');
+
+    var calTitleEl = document.getElementById('calTitle');
+    var calWeekdaysEl = document.getElementById('calWeekdays');
+    var calGridEl = document.getElementById('calGrid');
+    var calPrevBtn = document.getElementById('calPrev');
+    var calNextBtn = document.getElementById('calNext');
+    var penButtons = Array.prototype.slice.call(document.querySelectorAll('.pen'));
+    var calDetailEl = document.getElementById('calDetail');
+    var calDetailDateEl = document.getElementById('calDetailDate');
+    var calDetailBodyEl = document.getElementById('calDetailBody');
+    var calDetailCloseBtn = document.getElementById('calDetailClose');
+
+    var currentUser = null;
+    var daysUnsub = null;
+    var daysMap = new Map();
+    var activePen = null;
+    var calSelectedId = localDateId();
+    var now0 = new Date();
+    var calState = { year: now0.getFullYear(), month: now0.getMonth() };
+    var WEEKDAYS = ['S','M','T','W','T','F','S'];
+
+    function pad2(n){ return n < 10 ? '0' + n : '' + n; }
+
+    function localDateId(d){
+      d = d || new Date();
+      return d.getFullYear() + '-' + pad2(d.getMonth() + 1) + '-' + pad2(d.getDate());
+    }
+
+    function makeId(){
+      if (window.crypto && window.crypto.randomUUID) return window.crypto.randomUUID();
+      return 'w' + Date.now() + Math.random().toString(16).slice(2);
+    }
+
+    function clearChildren(el){ while (el.firstChild) el.removeChild(el.firstChild); }
+
+    function getDay(id){
+      var d = daysMap.get(id);
+      return d || { wins: [], losses: [], color: null };
+    }
+
+    function isGoodColor(color){ return color === 'blue' || color === 'green'; }
+
+    function computeStreaks(map){
+      function colorOf(id){
+        var d = map.get(id);
+        return d ? d.color : null;
+      }
+
+      var cursor = new Date();
+      var todayId = localDateId(cursor);
+      var todayColor = colorOf(todayId);
+      var streak = 0;
+      if (todayColor !== 'red'){
+        if (!isGoodColor(todayColor)){
+          cursor.setDate(cursor.getDate() - 1);
+        }
+        while (true){
+          var id = localDateId(cursor);
+          if (isGoodColor(colorOf(id))){
+            streak++;
+            cursor.setDate(cursor.getDate() - 1);
+          } else break;
+        }
+      }
+
+      var ids = [];
+      map.forEach(function(d, id){ if (isGoodColor(d.color)) ids.push(id); });
+      ids.sort();
+      var best = 0, run = 0, prevDate = null;
+      for (var i = 0; i < ids.length; i++){
+        var curDate = new Date(ids[i] + 'T00:00:00');
+        if (prevDate){
+          var diffDays = Math.round((curDate - prevDate) / 86400000);
+          run = diffDays === 1 ? run + 1 : 1;
+        } else {
+          run = 1;
+        }
+        if (run > best) best = run;
+        prevDate = curDate;
+      }
+      return { streak: streak, best: best };
+    }
+
+    function buildDetailList(items, extraClass, editable, type){
+      var ul = document.createElement('ul');
+      ul.className = 'history-wins' + (extraClass ? ' ' + extraClass : '') + (editable ? ' editable' : '');
+      items.forEach(function(w){
+        var li = document.createElement('li');
+        var span = document.createElement('span');
+        span.textContent = w.text;
+        li.appendChild(span);
+        if (editable){
+          var btn = document.createElement('button');
+          btn.type = 'button';
+          btn.className = 'win-remove';
+          btn.dataset.id = w.id;
+          btn.dataset.type = type;
+          btn.setAttribute('aria-label', 'Remove this entry');
+          btn.textContent = '×';
+          li.appendChild(btn);
+        }
+        ul.appendChild(li);
+      });
+      return ul;
+    }
+
+    function renderWeekdays(){
+      clearChildren(calWeekdaysEl);
+      WEEKDAYS.forEach(function(w){
+        var span = document.createElement('span');
+        span.textContent = w;
+        calWeekdaysEl.appendChild(span);
+      });
+    }
+
+    function renderCalendar(){
+      var year = calState.year, month = calState.month;
+      var first = new Date(year, month, 1);
+      var startDow = first.getDay();
+      var daysInMonth = new Date(year, month + 1, 0).getDate();
+      var totalCells = Math.ceil((startDow + daysInMonth) / 7) * 7;
+      var todayId = localDateId();
+
+      calTitleEl.textContent = first.toLocaleDateString(undefined, { month: 'long', year: 'numeric' });
+      clearChildren(calGridEl);
+
+      for (var i = 0; i < totalCells; i++){
+        var dayNum = i - startDow + 1;
+        if (dayNum < 1 || dayNum > daysInMonth){
+          var blank = document.createElement('div');
+          blank.className = 'cal-day blank';
+          calGridEl.appendChild(blank);
+          continue;
+        }
+        var id = year + '-' + pad2(month + 1) + '-' + pad2(dayNum);
+        var info = getDay(id);
+        var btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'cal-day';
+        if (info.color) btn.classList.add('tag-' + info.color);
+        if (id === todayId) btn.classList.add('today');
+        if (id === calSelectedId) btn.classList.add('selected');
+        btn.dataset.id = id;
+        btn.textContent = dayNum;
+        var label = new Date(year, month, dayNum).toLocaleDateString(undefined, { weekday: 'long', month: 'long', day: 'numeric' });
+        btn.setAttribute('aria-label', label + (info.color ? ', marked ' + info.color : ''));
+        calGridEl.appendChild(btn);
+      }
+    }
+
+    function renderCalendarDetail(){
+      if (!calSelectedId){
+        calDetailEl.hidden = true;
+        return;
+      }
+      calDetailEl.hidden = false;
+      var d = getDay(calSelectedId);
+      var dateObj = new Date(calSelectedId + 'T00:00:00');
+      var thisYear = new Date().getFullYear();
+      var opts = dateObj.getFullYear() === thisYear
+        ? { weekday: 'long', month: 'long', day: 'numeric' }
+        : { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' };
+      calDetailDateEl.textContent = (calSelectedId === localDateId() ? 'Today · ' : '') + dateObj.toLocaleDateString(undefined, opts);
+
+      var editable = calSelectedId === localDateId();
+      clearChildren(calDetailBodyEl);
+      if (d.wins.length === 0 && d.losses.length === 0){
+        var empty = document.createElement('p');
+        empty.className = 'empty-note';
+        empty.textContent = editable ? 'Nothing logged yet today — use the + buttons above.' : 'Nothing logged for this day.';
+        calDetailBodyEl.appendChild(empty);
+        return;
+      }
+      if (d.wins.length > 0){
+        var winPill = document.createElement('span');
+        winPill.className = 'history-count';
+        winPill.textContent = d.wins.length + (d.wins.length === 1 ? ' win' : ' wins');
+        calDetailBodyEl.appendChild(winPill);
+        calDetailBodyEl.appendChild(buildDetailList(d.wins, '', editable, 'win'));
+      }
+      if (d.losses.length > 0){
+        var lossPill = document.createElement('span');
+        lossPill.className = 'history-count loss';
+        lossPill.textContent = d.losses.length + (d.losses.length === 1 ? ' loss' : ' losses');
+        calDetailBodyEl.appendChild(lossPill);
+        calDetailBodyEl.appendChild(buildDetailList(d.losses, 'losses', editable, 'loss'));
+      }
+    }
+
+    function render(){
+      var todayId = localDateId();
+      var day = getDay(todayId);
+
+      var n = day.wins.length;
+      chargeSegs.forEach(function(seg, i){ seg.classList.toggle('lit', n > i); });
+      chargeEl.classList.toggle('full', n >= 3);
+      chargeCountEl.textContent = Math.min(n, 3) + '/3' + (n > 3 ? ' +' + (n - 3) : '');
+
+      var s = computeStreaks(daysMap);
+      var totalWins = 0, totalLosses = 0;
+      daysMap.forEach(function(d){
+        if (d.color === 'green' || d.color === 'blue') totalWins++;
+        else if (d.color === 'red') totalLosses++;
+      });
+      streakValueEl.textContent = s.streak;
+      bestValueEl.textContent = s.best;
+      winsValueEl.textContent = totalWins;
+      lossesValueEl.textContent = totalLosses;
+
+      renderCalendar();
+      renderCalendarDetail();
+    }
+
+    async function saveDay(id, patch){
+      if (!currentUser) return;
+      var existing = getDay(id);
+      var next = {
+        wins: patch.wins !== undefined ? patch.wins : existing.wins,
+        losses: patch.losses !== undefined ? patch.losses : existing.losses,
+        color: patch.color !== undefined ? patch.color : existing.color
+      };
+      var ref = doc(fsDb, 'users', currentUser.uid, 'days', id);
+      try {
+        if (next.wins.length === 0 && next.losses.length === 0 && !next.color){
+          await deleteDoc(ref);
+        } else {
+          await setDoc(ref, { date: id, wins: next.wins, losses: next.losses, color: next.color });
+        }
+      } catch (err) {
+        console.error('Failed to save day', err);
+      }
+    }
+
+    function addWin(text){
+      var id = localDateId();
+      var existing = getDay(id);
+      saveDay(id, { wins: existing.wins.concat([{ id: makeId(), text: text, ts: Date.now() }]) });
+    }
+    function removeWin(winId){
+      var id = localDateId();
+      var existing = getDay(id);
+      saveDay(id, { wins: existing.wins.filter(function(w){ return w.id !== winId; }) });
+    }
+    function addLoss(text){
+      var id = localDateId();
+      var existing = getDay(id);
+      saveDay(id, { losses: existing.losses.concat([{ id: makeId(), text: text, ts: Date.now() }]) });
+    }
+    function removeLoss(lossId){
+      var id = localDateId();
+      var existing = getDay(id);
+      saveDay(id, { losses: existing.losses.filter(function(w){ return w.id !== lossId; }) });
+    }
+    function toggleColor(id, color){
+      var existing = getDay(id);
+      saveDay(id, { color: existing.color === color ? null : color });
+    }
+
+    function collapseWinForm(){
+      winForm.hidden = true;
+      qaWinTrigger.hidden = false;
+      winInput.value = '';
+    }
+    function collapseLossForm(){
+      lossForm.hidden = true;
+      qaLossTrigger.hidden = false;
+      lossInput.value = '';
+    }
+
+    qaWinTrigger.addEventListener('click', function(){
+      qaWinTrigger.hidden = true;
+      winForm.hidden = false;
+      winInput.focus();
+    });
+    winCancel.addEventListener('click', collapseWinForm);
+    winForm.addEventListener('submit', function(e){
+      e.preventDefault();
+      var text = winInput.value.trim();
+      if (!text) return;
+      collapseWinForm();
+      calSelectedId = localDateId();
+      addWin(text);
+    });
+
+    qaLossTrigger.addEventListener('click', function(){
+      qaLossTrigger.hidden = true;
+      lossForm.hidden = false;
+      lossInput.focus();
+    });
+    lossCancel.addEventListener('click', collapseLossForm);
+    lossForm.addEventListener('submit', function(e){
+      e.preventDefault();
+      var text = lossInput.value.trim();
+      if (!text) return;
+      collapseLossForm();
+      calSelectedId = localDateId();
+      addLoss(text);
+    });
+
+    calDetailBodyEl.addEventListener('click', function(e){
+      var btn = e.target.closest('.win-remove');
+      if (!btn) return;
+      if (btn.dataset.type === 'win') removeWin(btn.dataset.id);
+      else if (btn.dataset.type === 'loss') removeLoss(btn.dataset.id);
+    });
+
+    calPrevBtn.addEventListener('click', function(){
+      calState.month -= 1;
+      if (calState.month < 0){ calState.month = 11; calState.year -= 1; }
+      renderCalendar();
+    });
+    calNextBtn.addEventListener('click', function(){
+      calState.month += 1;
+      if (calState.month > 11){ calState.month = 0; calState.year += 1; }
+      renderCalendar();
+    });
+
+    penButtons.forEach(function(btn){
+      btn.addEventListener('click', function(){
+        var color = btn.dataset.color;
+        activePen = (activePen === color) ? null : color;
+        penButtons.forEach(function(b){ b.classList.toggle('active', b.dataset.color === activePen); });
+      });
+    });
+
+    calGridEl.addEventListener('click', function(e){
+      var btn = e.target.closest('.cal-day');
+      if (!btn || btn.classList.contains('blank')) return;
+      var id = btn.dataset.id;
+      calSelectedId = id;
+      if (activePen) toggleColor(id, activePen);
+      renderCalendar();
+      renderCalendarDetail();
+    });
+
+    calDetailCloseBtn.addEventListener('click', function(){
+      calSelectedId = null;
+      renderCalendar();
+      renderCalendarDetail();
+    });
+
+    renderWeekdays();
+    render();
+
+    function subscribeToDays(uid){
+      if (daysUnsub) daysUnsub();
+      var colRef = collection(fsDb, 'users', uid, 'days');
+      daysUnsub = onSnapshot(colRef, function(snap){
+        var next = new Map();
+        snap.forEach(function(docSnap){
+          var data = docSnap.data() || {};
+          next.set(docSnap.id, {
+            wins: Array.isArray(data.wins) ? data.wins : [],
+            losses: Array.isArray(data.losses) ? data.losses : [],
+            color: typeof data.color === 'string' ? data.color : null
+          });
+        });
+        daysMap = next;
+        render();
+      }, function(err){
+        console.error('Firestore subscription error', err);
+      });
+    }
+
+    signInBtn.addEventListener('click', async function(){
+      authErrorEl.hidden = true;
+      try {
+        await signInWithPopup(auth, provider);
+      } catch (err) {
+        console.error(err);
+        authErrorEl.hidden = false;
+        authErrorEl.textContent = 'Sign-in failed: ' + (err && err.message ? err.message : 'please try again.');
+      }
+    });
+
+    signOutBtn.addEventListener('click', async function(){
+      try { await signOut(auth); } catch (err) { console.error(err); }
+    });
+
+    onAuthStateChanged(auth, function(user){
+      currentUser = user;
+      if (user){
+        authGateEl.hidden = true;
+        appBodyEl.hidden = false;
+        signOutBtn.hidden = false;
+        accountEmailEl.hidden = false;
+        accountEmailEl.textContent = user.email || '';
+        calSelectedId = localDateId();
+        subscribeToDays(user.uid);
+      } else {
+        authGateEl.hidden = false;
+        appBodyEl.hidden = true;
+        signOutBtn.hidden = true;
+        accountEmailEl.hidden = true;
+        if (daysUnsub){ daysUnsub(); daysUnsub = null; }
+        daysMap = new Map();
+        render();
+      }
+    });
+  })();
+</script>
+</body>
+</html>
